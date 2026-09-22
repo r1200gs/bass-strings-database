@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title th:text="${title} + ' | BassStrings Hub'">BassStrings Hub</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<header th:fragment="nav" class="site-header">
+    <div class="nav-inner">
+        <a class="brand" th:href="@{/}">BassStrings Hub</a>
+        <nav class="nav-links">
+            <a th:href="@{/strings}">Strings</a>
+            <a th:href="@{/models}">Bass models</a>
+        </nav>
+        <div class="account">
+            <span class="hello" sec:authorize="isAuthenticated()"
+                  th:text="'Hi, ' + ${#authentication.principal.userAccount.displayName}">Hi</span>
+            <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" class="inline-form">
+                <button type="submit" class="btn-link">Sign out</button>
+            </form>
+            <a sec:authorize="isAnonymous()" th:href="@{/login}" class="btn btn-primary">Sign in</a>
+        </div>
+    </div>
+</header>
+<footer th:fragment="footer" class="site-footer">
+    <p>BassStrings Hub &mdash; built by bass players, for bass players.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: bassstrings-hub
+
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/bassstrings}
+      auto-index-creation: true
+
+  thymeleaf:
+    cache: false
+
+server:
+  port: ${PORT:8080}
+
+# Credentials for the three OAuth2 sign-in providers. Each provider is only registered
+# (its login button only appears) once its client-id is set - see README.md for how to
+# obtain these from the Google, Facebook, and Apple developer consoles. Never commit real
+# values here; set them as environment variables in your shell, a .env file your process
+# manager loads, or your platform's secret store.
+app:
+  oauth2:
+    google:
+      client-id: ${GOOGLE_CLIENT_ID:}
+      client-secret: ${GOOGLE_CLIENT_SECRET:}
+    facebook:
+      client-id: ${FACEBOOK_CLIENT_ID:}
+      client-secret: ${FACEBOOK_CLIENT_SECRET:}
+    apple:
+      client-id: ${APPLE_CLIENT_ID:}
+      team-id: ${APPLE_TEAM_ID:}
+      key-id: ${APPLE_KEY_ID:}
+      private-key-path: ${APPLE_PRIVATE_KEY_PATH:}
+
+logging:
+  level:
+    com.bassstrings.hub: INFO

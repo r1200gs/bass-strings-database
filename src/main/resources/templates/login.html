@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/common :: head('Sign in')}"></head>
+<body>
+<header th:replace="~{fragments/common :: nav}"></header>
+<main class="container narrow">
+    <h1>Sign in</h1>
+    <p class="lede">Sign in to post reviews, rate strings for your playing style, and join the discussion.</p>
+
+    <div class="oauth-buttons">
+        <a th:if="${googleEnabled}" class="btn btn-oauth btn-google" th:href="@{/oauth2/authorization/google}">Continue with Google</a>
+        <a th:if="${facebookEnabled}" class="btn btn-oauth btn-facebook" th:href="@{/oauth2/authorization/facebook}">Continue with Facebook</a>
+        <a th:if="${appleEnabled}" class="btn btn-oauth btn-apple" th:href="@{/oauth2/authorization/apple}">Continue with Apple</a>
+    </div>
+    <p class="fine-print" th:unless="${googleEnabled or facebookEnabled or appleEnabled}">
+        No sign-in providers are configured yet &mdash; see README.md to set up Google, Facebook, and/or Apple sign-in.
+    </p>
+</main>
+<footer th:replace="~{fragments/common :: footer}"></footer>
+</body>
+</html>

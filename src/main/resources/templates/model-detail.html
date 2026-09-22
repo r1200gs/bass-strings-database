@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/common :: head(${bassModel.brand} + ' ' + ${bassModel.model})}"></head>
+<body>
+<header th:replace="~{fragments/common :: nav}"></header>
+<main class="container">
+    <section class="product-header">
+        <h1 th:text="${bassModel.brand} + ' ' + ${bassModel.model}">Brand Model</h1>
+        <p class="meta"
+           th:text="${bassModel.numStrings} + '-string &middot; ' + ${bassModel.scaleLength} + ' scale'
+                    + (${bassModel.yearIntroduced} != null ? ' &middot; introduced ' + ${bassModel.yearIntroduced} : '')">meta</p>
+        <p th:if="${bassModel.description}" th:text="${bassModel.description}">description</p>
+    </section>
+
+    <section class="reviews">
+        <h2>What subscribers strung this bass with</h2>
+        <p th:if="${#lists.isEmpty(relatedReviews)}" class="empty">No reviews have tagged this model yet.</p>
+        <article class="review-card" th:each="r : ${relatedReviews}">
+            <header>
+                <strong th:text="${r.authorDisplayName}">Author</strong>
+                <span class="stars" th:text="${r.overallRating} + '/5'">5/5</span>
+            </header>
+            <h3 th:text="${r.title}">Title</h3>
+            <p th:text="${r.body}">Body</p>
+            <p><a th:href="@{/strings/{id}(id=${r.bassStringId})}">See the strings they used &rarr;</a></p>
+        </article>
+    </section>
+</main>
+<footer th:replace="~{fragments/common :: footer}"></footer>
+</body>
+</html>

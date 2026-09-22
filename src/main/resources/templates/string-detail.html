@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/common :: head(${product.brand} + ' ' + ${product.productLine})}"></head>
+<body>
+<header th:replace="~{fragments/common :: nav}"></header>
+<main class="container">
+    <div th:if="${message}" class="flash" th:text="${message}"></div>
+
+    <section class="product-header">
+        <h1 th:text="${product.brand} + ' ' + ${product.productLine}">Brand Product</h1>
+        <p class="meta"
+           th:text="${product.material} + ' &middot; ' + ${product.construction} + ' &middot; ' + ${product.numStrings} + '-string'">meta</p>
+        <p th:if="${product.description}" th:text="${product.description}">description</p>
+    </section>
+
+    <section class="rating-summary">
+        <h2>Rating summary</h2>
+        <p th:if="${summary.reviewCount == 0}">No reviews yet &mdash; be the first.</p>
+        <div th:if="${summary.reviewCount > 0}">
+            <p class="big-rating">
+                <span th:text="${#numbers.formatDecimal(summary.averageOverall, 1, 1)}">4.5</span> / 5 overall
+                (<span th:text="${summary.reviewCount}">3</span> reviews)
+            </p>
+            <ul class="sub-ratings">
+                <li>Tone <span th:text="${#numbers.formatDecimal(summary.averageTone, 1, 1)}">4.0</span></li>
+                <li>Tension feel <span th:text="${#numbers.formatDecimal(summary.averageTension, 1, 1)}">4.0</span></li>
+                <li>Longevity <span th:text="${#numbers.formatDecimal(summary.averageLongevity, 1, 1)}">4.0</span></li>
+            </ul>
+            <div th:if="${not #lists.isEmpty(summary.byPlayingStyle)}">
+                <h3>Suitability by playing style</h3>
+                <ul class="style-ratings">
+                    <li th:each="s : ${summary.byPlayingStyle}">
+                        <span th:text="${s.style}">SLAP</span> &mdash;
+                        <span th:text="${#numbers.formatDecimal(s.averageRating, 1, 1)}">4.5</span>/5
+                        (<span th:text="${s.ratingCount}">2</span> ratings)
+                    </li>
+                </ul>
+            </div>
+            <div th:if="${not #lists.isEmpty(summary.byGenre)}">
+                <h3>Genres subscribers used it for</h3>
+                <span class="genre-tag" th:each="g : ${summary.byGenre}" th:text="${g.genre} + ' (' + ${g.count} + ')'">JAZZ (2)</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="write-review" sec:authorize="isAuthenticated()">
+        <h2>Share your experience</h2>
+        <form method="post" th:action="@{/strings/{id}/reviews(id=${product.id})}" th:object="${reviewForm}">
+            <label>Title <input type="text" th:field="*{title}" required maxlength="140"/></label>
+            <label>Your review <textarea th:field="*{body}" required maxlength="5000" rows="4"></textarea></label>
+
+            <div class="rating-inputs">
+                <label>Overall <input type="number" min="1" max="5" th:field="*{overallRating}" required/></label>
+                <label>Tone <input type="number" min="1" max="5" th:field="*{toneRating}" required/></label>
+                <label>Tension feel <input type="number" min="1" max="5" th:field="*{tensionRating}" required/></label>
+                <label>Longevity <input type="number" min="1" max="5" th:field="*{longevityRating}" required/></label>
+            </div>
+
+            <fieldset>
+                <legend>Suitability by playing style (optional, 1-5)</legend>
+                <label>Fingerstyle <input type="number" min="1" max="5" th:field="*{fingerstyleRating}"/></label>
+                <label>Slap <input type="number" min="1" max="5" th:field="*{slapRating}"/></label>
+                <label>Pick <input type="number" min="1" max="5" th:field="*{pickRating}"/></label>
+                <label>Tapping <input type="number" min="1" max="5" th:field="*{tappingRating}"/></label>
+                <label>Fingerpicking <input type="number" min="1" max="5" th:field="*{fingerpickingRating}"/></label>
+                <label>Thumping <input type="number" min="1" max="5" th:field="*{thumpingRating}"/></label>
+            </fieldset>
+
+            <fieldset>
+                <legend>Genres you played it for (optional)</legend>
+                <label class="checkbox" th:each="g : ${genres}">
+                    <input type="checkbox" th:field="*{genres}" th:value="${g}"/> <span th:text="${g}">JAZZ</span>
+                </label>
+            </fieldset>
+
+            <button type="submit" class="btn btn-primary">Post review</button>
+        </form>
+    </section>
+    <section class="write-review" sec:authorize="isAnonymous()">
+        <p><a th:href="@{/login}">Sign in</a> to write a review.</p>
+    </section>
+
+    <section class="reviews">
+        <h2>Reviews</h2>
+        <article class="review-card" th:each="r : ${reviews.content}" th:id="'review-' + ${r.id}">
+            <header>
+                <strong th:text="${r.authorDisplayName}">Author</strong>
+                <span class="stars" th:text="${r.overallRating} + '/5'">5/5</span>
+                <time th:text="${#temporals.format(r.createdAt, 'MMM d, yyyy')}">Jan 1, 2026</time>
+            </header>
+            <h3 th:text="${r.title}">Title</h3>
+            <p th:text="${r.body}">Body</p>
+            <p class="review-substats">
+                Tone <span th:text="${r.toneRating}">4</span> &middot;
+                Tension <span th:text="${r.tensionRating}">4</span> &middot;
+                Longevity <span th:text="${r.longevityRating}">4</span>
+            </p>
+            <p th:if="${not #maps.isEmpty(r.playingStyleRatings)}">
+                <span class="genre-tag" th:each="entry : ${r.playingStyleRatings}"
+                      th:text="${entry.key} + ' ' + ${entry.value}">SLAP 5</span>
+            </p>
+            <p th:if="${not #sets.isEmpty(r.genres)}">
+                <span class="genre-tag" th:each="g : ${r.genres}" th:text="${g}">JAZZ</span>
+            </p>
+
+            <form method="post" th:action="@{/reviews/{id}/delete(id=${r.id})}" class="inline-form"
+                  th:if="${currentUser != null and (currentUser.id == r.authorId or currentUser.roles.contains(T(com.bassstrings.hub.api.model.Role).ADMIN) or currentUser.roles.contains(T(com.bassstrings.hub.api.model.Role).MONITOR))}">
+                <button type="submit" class="btn-link danger">Remove review</button>
+            </form>
+
+            <div class="comments">
+                <div class="comment" th:each="c : ${commentsByReview.get(r.id)}">
+                    <strong th:text="${c.authorDisplayName}">Commenter</strong>:
+                    <span th:text="${c.body}">Comment text</span>
+                    <form method="post" th:action="@{/comments/{id}/delete(id=${c.id})}" class="inline-form"
+                          th:if="${currentUser != null and (currentUser.id == c.authorId or currentUser.roles.contains(T(com.bassstrings.hub.api.model.Role).ADMIN) or currentUser.roles.contains(T(com.bassstrings.hub.api.model.Role).MONITOR))}">
+                        <input type="hidden" name="bassStringId" th:value="${product.id}"/>
+                        <button type="submit" class="btn-link danger">Remove</button>
+                    </form>
+                </div>
+                <form method="post" th:action="@{/reviews/{id}/comments(id=${r.id})}" class="comment-form"
+                      sec:authorize="isAuthenticated()">
+                    <input type="text" name="body" placeholder="Add a comment..." maxlength="1000" required/>
+                    <button type="submit" class="btn-link">Comment</button>
+                </form>
+            </div>
+        </article>
+        <p th:if="${reviews.totalElements == 0}" class="empty">No reviews yet.</p>
+    </section>
+
+    <nav class="pagination" th:if="${reviews.totalPages > 1}">
+        <a th:each="i : ${#numbers.sequence(0, reviews.totalPages - 1)}"
+           th:href="@{/strings/{id}(id=${product.id}, page=${i})}"
+           th:text="${i + 1}"
+           th:class="${i == reviews.number} ? 'active' : ''"></a>
+    </nav>
+</main>
+<footer th:replace="~{fragments/common :: footer}"></footer>
+</body>
+</html>

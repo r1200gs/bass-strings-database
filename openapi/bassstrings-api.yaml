@@ -1,0 +1,674 @@
+openapi: 3.0.3
+info:
+  title: BassStrings Hub API
+  description: >
+    API for the BassStrings Hub subscription community: a catalog of bass guitar
+    models and bass string products, plus subscriber-contributed experience
+    reviews, ratings by playing style / musical genre, and comments.
+  version: "1.0.0"
+  contact:
+    name: BassStrings Hub
+tags:
+  - name: BassModels
+    description: Catalog of bass guitar models
+  - name: BassStrings
+    description: Catalog of bass string products and their ratings
+  - name: Reviews
+    description: Subscriber experience reviews of bass strings
+  - name: Comments
+    description: Comments on reviews
+  - name: Users
+    description: Current authenticated subscriber
+
+paths:
+  /api/v1/bass-models:
+    get:
+      tags: [BassModels]
+      operationId: listBassModels
+      summary: List bass guitar models
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/SizeParam'
+        - name: brand
+          in: query
+          schema: { type: string }
+        - name: numStrings
+          in: query
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Page of bass models
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BassModelPage' }
+    post:
+      tags: [BassModels]
+      operationId: createBassModel
+      summary: Add a new bass guitar model (admin only)
+      security: [{ cookieAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/BassModelRequest' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BassModel' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  /api/v1/bass-models/{bassModelId}:
+    parameters:
+      - name: bassModelId
+        in: path
+        required: true
+        schema: { type: string }
+    get:
+      tags: [BassModels]
+      operationId: getBassModel
+      summary: Get a bass guitar model by id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BassModel' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    put:
+      tags: [BassModels]
+      operationId: updateBassModel
+      summary: Update a bass guitar model (admin only)
+      security: [{ cookieAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/BassModelRequest' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BassModel' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [BassModels]
+      operationId: deleteBassModel
+      summary: Remove a bass guitar model (admin only)
+      security: [{ cookieAuth: [] }]
+      responses:
+        '204': { description: Deleted }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/v1/bass-strings:
+    get:
+      tags: [BassStrings]
+      operationId: listBassStrings
+      summary: Search/browse bass string products
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/SizeParam'
+        - name: brand
+          in: query
+          schema: { type: string }
+        - name: material
+          in: query
+          schema: { $ref: '#/components/schemas/StringMaterial' }
+        - name: construction
+          in: query
+          schema: { $ref: '#/components/schemas/StringConstruction' }
+        - name: numStrings
+          in: query
+          schema: { type: integer }
+        - name: playingStyle
+          in: query
+          description: Only return strings rated suitable for this playing style
+          schema: { $ref: '#/components/schemas/PlayingStyle' }
+        - name: genre
+          in: query
+          description: Only return strings tagged suitable for this music genre
+          schema: { $ref: '#/components/schemas/MusicGenre' }
+        - name: query
+          in: query
+          description: Free text search across brand/product line/description
+          schema: { type: string }
+      responses:
+        '200':
+          description: Page of bass strings
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BassStringPage' }
+    post:
+      tags: [BassStrings]
+      operationId: createBassString
+      summary: Add a new bass string product (admin only)
+      security: [{ cookieAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/BassStringRequest' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BassString' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  /api/v1/bass-strings/{bassStringId}:
+    parameters:
+      - name: bassStringId
+        in: path
+        required: true
+        schema: { type: string }
+    get:
+      tags: [BassStrings]
+      operationId: getBassString
+      summary: Get a bass string product by id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BassString' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    put:
+      tags: [BassStrings]
+      operationId: updateBassString
+      summary: Update a bass string product (admin only)
+      security: [{ cookieAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/BassStringRequest' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BassString' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [BassStrings]
+      operationId: deleteBassString
+      summary: Remove a bass string product (admin only)
+      security: [{ cookieAuth: [] }]
+      responses:
+        '204': { description: Deleted }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/v1/bass-strings/{bassStringId}/rating-summary:
+    parameters:
+      - name: bassStringId
+        in: path
+        required: true
+        schema: { type: string }
+    get:
+      tags: [BassStrings]
+      operationId: getRatingSummary
+      summary: Aggregate rating breakdown for a bass string (overall, by playing style, by genre)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RatingSummary' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/v1/bass-strings/{bassStringId}/reviews:
+    parameters:
+      - name: bassStringId
+        in: path
+        required: true
+        schema: { type: string }
+    get:
+      tags: [Reviews]
+      operationId: listReviewsForBassString
+      summary: List published reviews for a bass string
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/SizeParam'
+      responses:
+        '200':
+          description: Page of reviews
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ReviewPage' }
+    post:
+      tags: [Reviews]
+      operationId: createReview
+      summary: Post an experience review for a bass string (subscribers only)
+      security: [{ cookieAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ReviewRequest' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Review' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/v1/reviews/{reviewId}:
+    parameters:
+      - name: reviewId
+        in: path
+        required: true
+        schema: { type: string }
+    get:
+      tags: [Reviews]
+      operationId: getReview
+      summary: Get a single review
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Review' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    put:
+      tags: [Reviews]
+      operationId: updateReview
+      summary: Update a review (author or admin)
+      security: [{ cookieAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ReviewRequest' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Review' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [Reviews]
+      operationId: deleteReview
+      summary: Remove a review (author, monitor, or admin)
+      security: [{ cookieAuth: [] }]
+      responses:
+        '204': { description: Deleted }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/v1/reviews/{reviewId}/comments:
+    parameters:
+      - name: reviewId
+        in: path
+        required: true
+        schema: { type: string }
+    get:
+      tags: [Comments]
+      operationId: listCommentsForReview
+      summary: List comments on a review
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/SizeParam'
+      responses:
+        '200':
+          description: Page of comments
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CommentPage' }
+    post:
+      tags: [Comments]
+      operationId: createComment
+      summary: Add a comment to a review (subscribers only)
+      security: [{ cookieAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CommentRequest' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Comment' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/v1/comments/{commentId}:
+    parameters:
+      - name: commentId
+        in: path
+        required: true
+        schema: { type: string }
+    delete:
+      tags: [Comments]
+      operationId: deleteComment
+      summary: Remove a comment (author, monitor, or admin)
+      security: [{ cookieAuth: [] }]
+      responses:
+        '204': { description: Deleted }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/v1/users/me:
+    get:
+      tags: [Users]
+      operationId: getCurrentUser
+      summary: Get the currently authenticated subscriber
+      security: [{ cookieAuth: [] }]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+components:
+  parameters:
+    PageParam:
+      name: page
+      in: query
+      schema: { type: integer, minimum: 0, default: 0 }
+    SizeParam:
+      name: size
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
+
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ApiError' }
+    Forbidden:
+      description: Not permitted
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ApiError' }
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ApiError' }
+
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: JSESSIONID
+      description: >
+        Session established via OAuth2 login (Google, Facebook, or Apple).
+        Enforced by Spring Security, not by this spec.
+
+  schemas:
+    ApiError:
+      type: object
+      properties:
+        status: { type: integer }
+        message: { type: string }
+        timestamp: { type: string, format: date-time }
+
+    Role:
+      type: string
+      enum: [ADMIN, MONITOR, USER]
+
+    PlayingStyle:
+      type: string
+      enum: [FINGERSTYLE, SLAP, PICK, TAPPING, FINGERPICKING, THUMPING]
+
+    MusicGenre:
+      type: string
+      enum: [JAZZ, ROCK, METAL, FUNK, REGGAE, BLUES, POP, GOSPEL, PROGRESSIVE, CLASSICAL, COUNTRY, PUNK, R_AND_B]
+
+    StringMaterial:
+      type: string
+      enum: [NICKEL_PLATED_STEEL, PURE_NICKEL, STAINLESS_STEEL, COBALT, TITANIUM, COPPER, FLUOROCARBON, NYLON]
+
+    StringConstruction:
+      type: string
+      enum: [ROUNDWOUND, FLATWOUND, HALFROUND, TAPEWOUND, PRESSUREWOUND]
+
+    ScaleLength:
+      type: string
+      enum: [SHORT, MEDIUM, LONG, SUPER_LONG, MULTI_SCALE]
+
+    ReviewStatus:
+      type: string
+      enum: [PUBLISHED, FLAGGED, REMOVED]
+
+    CommentStatus:
+      type: string
+      enum: [PUBLISHED, REMOVED]
+
+    User:
+      type: object
+      properties:
+        id: { type: string }
+        displayName: { type: string }
+        email: { type: string, format: email }
+        roles:
+          type: array
+          items: { $ref: '#/components/schemas/Role' }
+        provider: { type: string, example: google }
+        createdAt: { type: string, format: date-time }
+
+    BassModel:
+      type: object
+      properties:
+        id: { type: string }
+        brand: { type: string }
+        model: { type: string }
+        numStrings: { type: integer }
+        scaleLength: { $ref: '#/components/schemas/ScaleLength' }
+        yearIntroduced: { type: integer, nullable: true }
+        description: { type: string }
+        imageUrl: { type: string, nullable: true }
+        createdAt: { type: string, format: date-time }
+
+    BassModelRequest:
+      type: object
+      required: [brand, model, numStrings, scaleLength]
+      properties:
+        brand: { type: string }
+        model: { type: string }
+        numStrings: { type: integer, minimum: 4, maximum: 12 }
+        scaleLength: { $ref: '#/components/schemas/ScaleLength' }
+        yearIntroduced: { type: integer, nullable: true }
+        description: { type: string }
+        imageUrl: { type: string, nullable: true }
+
+    BassModelPage:
+      type: object
+      properties:
+        content:
+          type: array
+          items: { $ref: '#/components/schemas/BassModel' }
+        page: { type: integer }
+        size: { type: integer }
+        totalElements: { type: integer, format: int64 }
+        totalPages: { type: integer }
+
+    PriceRange:
+      type: object
+      properties:
+        minUsd: { type: number, format: double }
+        maxUsd: { type: number, format: double }
+
+    BassString:
+      type: object
+      properties:
+        id: { type: string }
+        brand: { type: string }
+        productLine: { type: string }
+        material: { $ref: '#/components/schemas/StringMaterial' }
+        construction: { $ref: '#/components/schemas/StringConstruction' }
+        coated: { type: boolean }
+        numStrings: { type: integer }
+        gauges:
+          type: array
+          items: { type: number, format: double }
+        compatibleScaleLengths:
+          type: array
+          items: { $ref: '#/components/schemas/ScaleLength' }
+        priceRange: { $ref: '#/components/schemas/PriceRange' }
+        description: { type: string }
+        imageUrl: { type: string, nullable: true }
+        createdAt: { type: string, format: date-time }
+
+    BassStringRequest:
+      type: object
+      required: [brand, productLine, material, construction, numStrings]
+      properties:
+        brand: { type: string }
+        productLine: { type: string }
+        material: { $ref: '#/components/schemas/StringMaterial' }
+        construction: { $ref: '#/components/schemas/StringConstruction' }
+        coated: { type: boolean, default: false }
+        numStrings: { type: integer, minimum: 4, maximum: 12 }
+        gauges:
+          type: array
+          items: { type: number, format: double }
+        compatibleScaleLengths:
+          type: array
+          items: { $ref: '#/components/schemas/ScaleLength' }
+        priceRange: { $ref: '#/components/schemas/PriceRange' }
+        description: { type: string }
+        imageUrl: { type: string, nullable: true }
+
+    BassStringPage:
+      type: object
+      properties:
+        content:
+          type: array
+          items: { $ref: '#/components/schemas/BassString' }
+        page: { type: integer }
+        size: { type: integer }
+        totalElements: { type: integer, format: int64 }
+        totalPages: { type: integer }
+
+    PlayingStyleRating:
+      type: object
+      properties:
+        style: { $ref: '#/components/schemas/PlayingStyle' }
+        rating: { type: integer, minimum: 1, maximum: 5 }
+
+    Review:
+      type: object
+      properties:
+        id: { type: string }
+        bassStringId: { type: string }
+        bassModelId: { type: string, nullable: true }
+        authorId: { type: string }
+        authorDisplayName: { type: string }
+        title: { type: string }
+        body: { type: string }
+        overallRating: { type: integer, minimum: 1, maximum: 5 }
+        toneRating: { type: integer, minimum: 1, maximum: 5 }
+        tensionRating: { type: integer, minimum: 1, maximum: 5 }
+        longevityRating: { type: integer, minimum: 1, maximum: 5 }
+        playingStyleRatings:
+          type: array
+          items: { $ref: '#/components/schemas/PlayingStyleRating' }
+        genres:
+          type: array
+          items: { $ref: '#/components/schemas/MusicGenre' }
+        status: { $ref: '#/components/schemas/ReviewStatus' }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    ReviewRequest:
+      type: object
+      required: [title, body, overallRating, toneRating, tensionRating, longevityRating]
+      properties:
+        bassModelId: { type: string, nullable: true }
+        title: { type: string, maxLength: 140 }
+        body: { type: string, maxLength: 5000 }
+        overallRating: { type: integer, minimum: 1, maximum: 5 }
+        toneRating: { type: integer, minimum: 1, maximum: 5 }
+        tensionRating: { type: integer, minimum: 1, maximum: 5 }
+        longevityRating: { type: integer, minimum: 1, maximum: 5 }
+        playingStyleRatings:
+          type: array
+          items: { $ref: '#/components/schemas/PlayingStyleRating' }
+        genres:
+          type: array
+          items: { $ref: '#/components/schemas/MusicGenre' }
+
+    ReviewPage:
+      type: object
+      properties:
+        content:
+          type: array
+          items: { $ref: '#/components/schemas/Review' }
+        page: { type: integer }
+        size: { type: integer }
+        totalElements: { type: integer, format: int64 }
+        totalPages: { type: integer }
+
+    Comment:
+      type: object
+      properties:
+        id: { type: string }
+        reviewId: { type: string }
+        authorId: { type: string }
+        authorDisplayName: { type: string }
+        body: { type: string }
+        status: { $ref: '#/components/schemas/CommentStatus' }
+        createdAt: { type: string, format: date-time }
+
+    CommentRequest:
+      type: object
+      required: [body]
+      properties:
+        body: { type: string, maxLength: 1000 }
+
+    CommentPage:
+      type: object
+      properties:
+        content:
+          type: array
+          items: { $ref: '#/components/schemas/Comment' }
+        page: { type: integer }
+        size: { type: integer }
+        totalElements: { type: integer, format: int64 }
+        totalPages: { type: integer }
+
+    PlayingStyleAverage:
+      type: object
+      properties:
+        style: { $ref: '#/components/schemas/PlayingStyle' }
+        averageRating: { type: number, format: double }
+        ratingCount: { type: integer }
+
+    GenreCount:
+      type: object
+      properties:
+        genre: { $ref: '#/components/schemas/MusicGenre' }
+        count: { type: integer }
+
+    RatingSummary:
+      type: object
+      properties:
+        bassStringId: { type: string }
+        reviewCount: { type: integer }
+        averageOverall: { type: number, format: double }
+        averageTone: { type: number, format: double }
+        averageTension: { type: number, format: double }
+        averageLongevity: { type: number, format: double }
+        byPlayingStyle:
+          type: array
+          items: { $ref: '#/components/schemas/PlayingStyleAverage' }
+        byGenre:
+          type: array
+          items: { $ref: '#/components/schemas/GenreCount' }

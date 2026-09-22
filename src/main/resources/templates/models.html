@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/common :: head('Bass guitar models')}"></head>
+<body>
+<header th:replace="~{fragments/common :: nav}"></header>
+<main class="container">
+    <h1>Bass guitar models</h1>
+    <p class="lede">Browse the catalog of bass models subscribers have tagged their string reviews with.</p>
+
+    <form method="get" th:action="@{/models}" class="filter-form">
+        <input type="text" name="brand" placeholder="Brand" th:value="${brand}"/>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    <div class="card-grid">
+        <a class="product-card" th:each="m : ${results.content}" th:href="@{/models/{id}(id=${m.id})}">
+            <h3 th:text="${m.brand} + ' ' + ${m.model}">Brand Model</h3>
+            <p class="meta" th:text="${m.numStrings} + '-string &middot; ' + ${m.scaleLength}">meta</p>
+        </a>
+    </div>
+
+    <p th:if="${results.totalElements == 0}" class="empty">No bass models in the catalog yet.</p>
+
+    <nav class="pagination" th:if="${results.totalPages > 1}">
+        <a th:each="i : ${#numbers.sequence(0, results.totalPages - 1)}"
+           th:href="@{/models(page=${i}, brand=${brand})}"
+           th:text="${i + 1}"
+           th:class="${i == results.number} ? 'active' : ''"></a>
+    </nav>
+</main>
+<footer th:replace="~{fragments/common :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/common :: head('Bass string catalog')}"></head>
+<body>
+<header th:replace="~{fragments/common :: nav}"></header>
+<main class="container">
+    <h1>Find the right bass strings</h1>
+    <p class="lede">Filter by material, playing style, and genre to see what other subscribers rate highest.</p>
+
+    <form method="get" th:action="@{/strings}" class="filter-form">
+        <input type="text" name="q" placeholder="Search brand, product line..." th:value="${criteria.freeTextQuery()}"/>
+        <input type="text" name="brand" placeholder="Brand" th:value="${criteria.brand()}"/>
+        <select name="material">
+            <option value="">Any material</option>
+            <option th:each="m : ${materials}" th:value="${m}" th:text="${m}" th:selected="${m == criteria.material()}"></option>
+        </select>
+        <select name="construction">
+            <option value="">Any construction</option>
+            <option th:each="c : ${constructions}" th:value="${c}" th:text="${c}" th:selected="${c == criteria.construction()}"></option>
+        </select>
+        <select name="playingStyle">
+            <option value="">Any playing style</option>
+            <option th:each="s : ${playingStyles}" th:value="${s}" th:text="${s}" th:selected="${s == criteria.playingStyle()}"></option>
+        </select>
+        <select name="genre">
+            <option value="">Any genre</option>
+            <option th:each="g : ${genres}" th:value="${g}" th:text="${g}" th:selected="${g == criteria.genre()}"></option>
+        </select>
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </form>
+
+    <div class="card-grid">
+        <a class="product-card" th:each="p : ${results.content}" th:href="@{/strings/{id}(id=${p.id})}">
+            <h3 th:text="${p.brand} + ' ' + ${p.productLine}">Brand Product</h3>
+            <p class="meta"
+               th:text="${p.material} + ' &middot; ' + ${p.construction} + (${p.coated} ? ' &middot; coated' : '')">material</p>
+            <p class="rating" th:if="${p.reviewCount > 0}">
+                <span th:text="${#numbers.formatDecimal(p.averageOverallRating, 1, 1)}">4.5</span> / 5
+                <span class="count" th:text="'(' + ${p.reviewCount} + ' reviews)'">(3 reviews)</span>
+            </p>
+            <p class="rating muted" th:unless="${p.reviewCount > 0}">No reviews yet</p>
+        </a>
+    </div>
+
+    <p th:if="${results.totalElements == 0}" class="empty">No strings match those filters yet.</p>
+
+    <nav class="pagination" th:if="${results.totalPages > 1}">
+        <a th:each="i : ${#numbers.sequence(0, results.totalPages - 1)}"
+           th:href="@{/strings(page=${i}, q=${criteria.freeTextQuery()}, brand=${criteria.brand()}, material=${criteria.material()}, construction=${criteria.construction()}, playingStyle=${criteria.playingStyle()}, genre=${criteria.genre()})}"
+           th:text="${i + 1}"
+           th:class="${i == results.number} ? 'active' : ''"></a>
+    </nav>
+</main>
+<footer th:replace="~{fragments/common :: footer}"></footer>
+</body>
+</html>
