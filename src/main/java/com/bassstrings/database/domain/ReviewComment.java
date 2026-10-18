@@ -1,8 +1,7 @@
 package com.bassstrings.database.domain;
 
 import com.bassstrings.database.api.model.CommentStatus;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -12,8 +11,7 @@ import java.time.Instant;
 
 /** A comment left on a {@link StringReview}. */
 @Document(collection = "comments")
-@Getter
-@Setter
+@Data
 public class ReviewComment {
 
     @Id

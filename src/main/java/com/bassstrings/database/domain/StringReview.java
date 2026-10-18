@@ -3,8 +3,7 @@ package com.bassstrings.database.domain;
 import com.bassstrings.database.api.model.MusicGenre;
 import com.bassstrings.database.api.model.PlayingStyle;
 import com.bassstrings.database.api.model.ReviewStatus;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -19,8 +18,7 @@ import java.util.Set;
 
 /** A subscriber's experience review of a {@link BassStringProduct}. */
 @Document(collection = "reviews")
-@Getter
-@Setter
+@Data
 public class StringReview {
 
     @Id

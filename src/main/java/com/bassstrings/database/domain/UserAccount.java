@@ -1,8 +1,7 @@
 package com.bassstrings.database.domain;
 
 import com.bassstrings.database.api.model.Role;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -24,8 +23,7 @@ import java.util.Set;
  * domain concept below has its own persistence type, independent of the generated DTOs.
  */
 @Document(collection = "users")
-@Getter
-@Setter
+@Data
 public class UserAccount {
 
     @Id

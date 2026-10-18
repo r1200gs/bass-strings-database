@@ -5,8 +5,7 @@ import com.bassstrings.database.api.model.PlayingStyle;
 import com.bassstrings.database.api.model.ScaleLength;
 import com.bassstrings.database.api.model.StringConstruction;
 import com.bassstrings.database.api.model.StringMaterial;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -27,8 +26,7 @@ import java.util.Set;
  * rating without an aggregation query on every page view.
  */
 @Document(collection = "bass_strings")
-@Getter
-@Setter
+@Data
 public class BassStringProduct {
 
     @Id
