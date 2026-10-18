@@ -48,16 +48,32 @@ public class OAuth2ClientRegistrationConfig {
             log.warn("Apple sign-in disabled: app.oauth2.apple.client-id is not set");
         }
 
-        if (registrations.isEmpty()) {
+        if (properties.getMock().isEnabled()) {
+            log.warn("Mock sign-in enabled against {} - local development and tests only",
+                    properties.getMock().getIssuerUri());
+            registrations.add(mockRegistration(properties.getMock()));
+        } else if (registrations.isEmpty()) {
+            // InMemoryClientRegistrationRepository refuses an empty list, so fall back to the
+            // mock provider to keep the app bootable; its button just won't work unless a
+            // mock-oauth2-server is running at app.oauth2.mock.issuer-uri.
             log.warn("No OAuth2 providers are configured. See README.md to set up Google, Facebook, and/or "
-                    + "Apple sign-in - until then, only the public catalog pages are reachable.");
+                    + "Apple sign-in, or set MOCK_OAUTH2_ENABLED=true to sign in via mock-oauth2-server.");
             registrations.add(mockRegistration(properties.getMock()));
         }
 
         return new InMemoryClientRegistrationRepository(registrations);
     }
 
-    private ClientRegistration mockRegistration(SocialLoginProperties.Provider props) {
+    /**
+     * mock-oauth2-server serves a full OIDC provider under {@code <base>/<issuerId>}, so every
+     * endpoint hangs off the issuer. The authorization endpoint is the one exception that may
+     * use a different host, since the browser follows it rather than the app.
+     */
+    ClientRegistration mockRegistration(SocialLoginProperties.Mock props) {
+        String issuer = trimTrailingSlash(props.getIssuerUri());
+        String authorizationUri = hasText(props.getAuthorizationUri())
+                ? props.getAuthorizationUri()
+                : issuer + "/authorize";
         return ClientRegistration.withRegistrationId("mock")
                 .clientId(props.getClientId())
                 .clientSecret(props.getClientSecret())
@@ -65,13 +81,13 @@ public class OAuth2ClientRegistrationConfig {
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
                 .scope("openid", "profile", "email")
-                .authorizationUri("https://accounts.google.com/o/oauth2/v2/auth")
-                .tokenUri("https://www.googleapis.com/oauth2/v4/token")
-                .userInfoUri("https://www.googleapis.com/oauth2/v3/userinfo")
+                .authorizationUri(authorizationUri)
+                .tokenUri(issuer + "/token")
+                .userInfoUri(issuer + "/userinfo")
                 .userNameAttributeName("sub")
-                .jwkSetUri("https://www.googleapis.com/oauth2/v3/certs")
-                .issuerUri("https://accounts.google.com")
-                .clientName("Google")
+                .jwkSetUri(issuer + "/jwks")
+                .issuerUri(issuer)
+                .clientName("Mock login")
                 .build();
     }
 
@@ -129,5 +145,9 @@ public class OAuth2ClientRegistrationConfig {
 
     private boolean hasText(String value) {
         return value != null && !value.isBlank();
+    }
+
+    private String trimTrailingSlash(String value) {
+        return value.endsWith("/") ? value.substring(0, value.length() - 1) : value;
     }
 }

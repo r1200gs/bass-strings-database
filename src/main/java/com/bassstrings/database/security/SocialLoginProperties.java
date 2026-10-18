@@ -1,6 +1,5 @@
 package com.bassstrings.database.security;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -17,14 +16,38 @@ public class SocialLoginProperties {
     private Provider google = new Provider();
     private Provider facebook = new Provider();
     private Apple apple = new Apple();
-    @Setter(AccessLevel.NONE)
-    private Provider mock = new Provider();
+    private Mock mock = new Mock();
 
     @Getter
     @Setter
     public static class Provider {
         private String clientId;
         private String clientSecret;
+    }
+
+    /**
+     * A local stand-in provider backed by navikt's mock-oauth2-server (see
+     * docker-compose.yml), for signing in during local runs and integration tests without
+     * real Google/Facebook/Apple credentials. Never enable this in production.
+     */
+    @Getter
+    @Setter
+    public static class Mock extends Provider {
+        private boolean enabled;
+        /**
+         * Issuer the app talks to server-to-server (token, userinfo, JWKS), e.g.
+         * {@code http://mock-oauth2-server:8080/default} from inside docker-compose. It must
+         * match the {@code iss} claim the mock server puts in its id_tokens, which it
+         * derives from the host the token request was sent to.
+         */
+        private String issuerUri;
+        /**
+         * Authorization endpoint the browser is redirected to. Only differs from
+         * {@code issuerUri + "/authorize"} when the app and the browser reach the mock
+         * server by different host names (the app container vs. your machine). Defaults
+         * to {@code issuerUri + "/authorize"} when blank.
+         */
+        private String authorizationUri;
     }
 
     /**

@@ -387,6 +387,10 @@ label.checkbox {
     background: #000000;
 }
 
+.btn-mock {
+    background: #6b7280;
+}
+
 .fine-print {
     color: var(--ink-soft);
     font-size: 0.85rem;

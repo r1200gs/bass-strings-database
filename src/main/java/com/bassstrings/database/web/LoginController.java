@@ -19,6 +19,8 @@ public class LoginController {
         model.addAttribute("googleEnabled", isRegistered("google"));
         model.addAttribute("facebookEnabled", isRegistered("facebook"));
         model.addAttribute("appleEnabled", isRegistered("apple"));
+        // Local-only provider backed by mock-oauth2-server (see docker-compose.yml).
+        model.addAttribute("mockEnabled", isRegistered("mock"));
         return "login";
     }
 
