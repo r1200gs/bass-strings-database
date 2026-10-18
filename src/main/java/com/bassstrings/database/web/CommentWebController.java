@@ -5,6 +5,7 @@ import com.bassstrings.database.domain.StringReview;
 import com.bassstrings.database.security.CurrentUserSupport;
 import com.bassstrings.database.service.CommentService;
 import com.bassstrings.database.service.ReviewService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,15 +14,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /** Handles comment creation/removal from the review detail page. */
 @Controller
+@RequiredArgsConstructor
 public class CommentWebController {
 
     private final CommentService commentService;
     private final ReviewService reviewService;
-
-    public CommentWebController(CommentService commentService, ReviewService reviewService) {
-        this.commentService = commentService;
-        this.reviewService = reviewService;
-    }
 
     @PostMapping("/reviews/{reviewId}/comments")
     public String create(@PathVariable String reviewId, @RequestParam String body,

@@ -1,6 +1,7 @@
 package com.bassstrings.database.security;
 
 import com.bassstrings.database.domain.UserAccount;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
@@ -21,14 +22,11 @@ import org.springframework.stereotype.Service;
  * since it's not needed for the catalog/review MVP.
  */
 @Service
+@RequiredArgsConstructor
 public class AccountProvisioningOidcUserService implements OAuth2UserService<OidcUserRequest, OidcUser> {
 
     private final OidcUserService delegate = new OidcUserService();
     private final UserAccountProvisioner provisioner;
-
-    public AccountProvisioningOidcUserService(UserAccountProvisioner provisioner) {
-        this.provisioner = provisioner;
-    }
 
     @Override
     public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {

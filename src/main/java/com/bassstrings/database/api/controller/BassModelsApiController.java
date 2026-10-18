@@ -7,6 +7,7 @@ import com.bassstrings.database.api.model.BassModelRequest;
 import com.bassstrings.database.domain.BassGuitarModel;
 import com.bassstrings.database.mapper.BassModelMapper;
 import com.bassstrings.database.service.BassModelService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -19,15 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
  * Method-level authorization (admin-only writes) is enforced in {@link BassModelService}.
  */
 @RestController
+@RequiredArgsConstructor
 public class BassModelsApiController implements BassModelsApi {
 
     private final BassModelService service;
     private final BassModelMapper mapper;
-
-    public BassModelsApiController(BassModelService service, BassModelMapper mapper) {
-        this.service = service;
-        this.mapper = mapper;
-    }
 
     @Override
     public ResponseEntity<BassModelPage> listBassModels(Integer page, Integer size, String brand, Integer numStrings) {

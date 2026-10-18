@@ -14,6 +14,7 @@ import com.bassstrings.database.domain.UserAccount;
 import com.bassstrings.database.exception.ResourceNotFoundException;
 import com.bassstrings.database.repository.BassStringProductRepository;
 import com.bassstrings.database.repository.ReviewRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -38,6 +39,7 @@ import java.util.function.ToIntFunction;
  * {@link #recalculateAggregates(String)}.
  */
 @Service
+@RequiredArgsConstructor
 public class ReviewService {
 
     private static final double SUITABLE_THRESHOLD = 4.0;
@@ -45,14 +47,6 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final BassStringProductRepository bassStringRepository;
     private final MongoTemplate mongoTemplate;
-
-    public ReviewService(ReviewRepository reviewRepository,
-                          BassStringProductRepository bassStringRepository,
-                          MongoTemplate mongoTemplate) {
-        this.reviewRepository = reviewRepository;
-        this.bassStringRepository = bassStringRepository;
-        this.mongoTemplate = mongoTemplate;
-    }
 
     public Page<StringReview> listForBassString(String bassStringId, Pageable pageable) {
         return reviewRepository.findByBassStringIdAndStatus(bassStringId, ReviewStatus.PUBLISHED, pageable);

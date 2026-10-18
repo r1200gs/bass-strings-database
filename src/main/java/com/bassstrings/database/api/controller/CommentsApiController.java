@@ -8,6 +8,7 @@ import com.bassstrings.database.domain.ReviewComment;
 import com.bassstrings.database.domain.UserAccount;
 import com.bassstrings.database.mapper.CommentMapper;
 import com.bassstrings.database.service.CommentService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -18,15 +19,11 @@ import static com.bassstrings.database.security.CurrentUserSupport.currentUser;
 
 /** Implements the {@link CommentsApi} interface generated from openapi/bassstrings-api.yaml. */
 @RestController
+@RequiredArgsConstructor
 public class CommentsApiController implements CommentsApi {
 
     private final CommentService service;
     private final CommentMapper mapper;
-
-    public CommentsApiController(CommentService service, CommentMapper mapper) {
-        this.service = service;
-        this.mapper = mapper;
-    }
 
     @Override
     public ResponseEntity<CommentPage> listCommentsForReview(String reviewId, Integer page, Integer size) {
