@@ -20,6 +20,9 @@ server:
 # manager loads, or your platform's secret store.
 app:
   oauth2:
+    mock:
+      client-id: mock
+      client-secret: mock
     google:
       client-id: ${GOOGLE_CLIENT_ID:}
       client-secret: ${GOOGLE_CLIENT_SECRET:}

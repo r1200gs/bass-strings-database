@@ -14,7 +14,7 @@
   <groupId>com.bassstrings</groupId>
   <artifactId>bass-strings-database</artifactId>
   <version>0.1.0-SNAPSHOT</version>
-  <name>bassstrings-database</name>
+  <name>bass-strings-database</name>
   <description>Subscription community for bass players to review and discover bass strings</description>
   <packaging>jar</packaging>
 
@@ -89,6 +89,20 @@
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-test</artifactId>
       <scope>test</scope>
+    </dependency>
+    <!-- Source: https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.48</version>
+      <scope>compile</scope>
+    </dependency>
+    <!-- Source: https://mvnrepository.com/artifact/com.github.ekryd.sortpom/sortpom-maven-plugin -->
+    <dependency>
+      <groupId>com.github.ekryd.sortpom</groupId>
+      <artifactId>sortpom-maven-plugin</artifactId>
+      <version>4.0.0</version>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
 

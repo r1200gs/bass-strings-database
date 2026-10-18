@@ -53,9 +53,28 @@ public class OAuth2ClientRegistrationConfig {
         if (registrations.isEmpty()) {
             log.warn("No OAuth2 providers are configured. See README.md to set up Google, Facebook, and/or "
                     + "Apple sign-in - until then, only the public catalog pages are reachable.");
+            registrations.add(mockRegistration(properties.getMock()));
         }
 
         return new InMemoryClientRegistrationRepository(registrations);
+    }
+
+    private ClientRegistration mockRegistration(SocialLoginProperties.Provider props) {
+        return ClientRegistration.withRegistrationId("mock")
+                .clientId(props.getClientId())
+                .clientSecret(props.getClientSecret())
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
+                .scope("openid", "profile", "email")
+                .authorizationUri("https://accounts.google.com/o/oauth2/v2/auth")
+                .tokenUri("https://www.googleapis.com/oauth2/v4/token")
+                .userInfoUri("https://www.googleapis.com/oauth2/v3/userinfo")
+                .userNameAttributeName("sub")
+                .jwkSetUri("https://www.googleapis.com/oauth2/v3/certs")
+                .issuerUri("https://accounts.google.com")
+                .clientName("Google")
+                .build();
     }
 
     private ClientRegistration googleRegistration(SocialLoginProperties.Provider props) {

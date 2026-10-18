@@ -12,6 +12,7 @@ public class SocialLoginProperties {
     private Provider google = new Provider();
     private Provider facebook = new Provider();
     private Apple apple = new Apple();
+    private Provider mock = new Provider();
 
     public Provider getGoogle() {
         return google;
@@ -35,6 +36,10 @@ public class SocialLoginProperties {
 
     public void setApple(Apple apple) {
         this.apple = apple;
+    }
+
+    public Provider getMock() {
+        return mock;
     }
 
     public static class Provider {

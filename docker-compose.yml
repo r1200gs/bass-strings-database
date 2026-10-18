@@ -1,0 +1,42 @@
+services:
+
+  mock-oauth2-server:
+    image: ghcr.io/navikt/mock-oauth2-server:6.0.2
+    container_name: mock_oauth2_server
+    ports:
+      - "8090:8080" # Maps port 8080 inside container to 8090 on your host machine
+    environment:
+      LOG_LEVEL: "debug"
+
+  # Your Application Service
+  bass-strings-database:
+    image: bass-strings-database:latest
+    build: .                 # Builds the Dockerfile in the current directory
+    ports:
+      - "8080:8080" # Application port
+      - "5005:5005" # Debugging port
+    environment:
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005
+      - SPRING_MONGODB_URI=mongodb://rootuser:rootpass@mongodb:27017/myapp?authSource=admin
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://mock-oauth2-server:8080/default/jwks
+    depends_on:
+      - mock-oauth2-server
+      - mongodb              # Ensures the database starts before your app
+
+
+  # MongoDB Service
+  mongodb:
+    image: mongo:latest      # Uses the official MongoDB image from Docker Hub
+    container_name: mongodb_container
+    restart: unless-stopped
+    ports:
+      - "27017:27017"        # Exposes MongoDB to your local machine
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=rootuser
+      - MONGO_INITDB_ROOT_PASSWORD=rootpass
+    volumes:
+      # Persistent Database Directory:
+      # Maps a local folder './mongo-data' to the container's internal data folder
+      - ./mongo-data:/data/db
+
+  # Named volumes are not needed here because we are using a direct local folder bind mount

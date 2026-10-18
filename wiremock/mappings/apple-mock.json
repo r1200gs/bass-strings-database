@@ -1,0 +1,30 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "POST",
+        "url": "/auth/token"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": "{ \"access_token\": \"fake-access-token\", \"token_type\": \"Bearer\", \"expires_in\": 3600, \"id_token\": \"EY...MOCK_JWT_PAYLOAD...\" }"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/auth/keys"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": "{ \"keys\": [ { \"kty\": \"RSA\", \"kid\": \"fake-apple-key-id\", \"use\": \"sig\", \"alg\": \"RS256\", \"n\": \"fake-modulus...\", \"e\": \"AQAB\" } ] }"
+      }
+    }
+  ]
+}
