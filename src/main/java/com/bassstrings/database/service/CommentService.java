@@ -7,6 +7,7 @@ import com.bassstrings.database.domain.UserAccount;
 import com.bassstrings.database.exception.ResourceNotFoundException;
 import com.bassstrings.database.repository.CommentRepository;
 import com.bassstrings.database.repository.ReviewRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
@@ -14,15 +15,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class CommentService {
 
     private final CommentRepository commentRepository;
     private final ReviewRepository reviewRepository;
-
-    public CommentService(CommentRepository commentRepository, ReviewRepository reviewRepository) {
-        this.commentRepository = commentRepository;
-        this.reviewRepository = reviewRepository;
-    }
 
     public Page<ReviewComment> listForReview(String reviewId, Pageable pageable) {
         return commentRepository.findByReviewIdAndStatus(reviewId, CommentStatus.PUBLISHED, pageable);

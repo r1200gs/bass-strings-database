@@ -3,6 +3,8 @@ package com.bassstrings.database.web;
 import com.bassstrings.database.api.model.MusicGenre;
 import com.bassstrings.database.api.model.PlayingStyle;
 import com.bassstrings.database.domain.StringReview;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.EnumMap;
 import java.util.LinkedHashSet;
@@ -16,6 +18,8 @@ import java.util.Set;
  * {@code List<PlayingStyleRating>} the API uses; {@link #toPlayingStyleRatings()} folds
  * the flat fields back into that shape when the review is saved.
  */
+@Getter
+@Setter
 public class ReviewFormData {
 
     private String title = "";
@@ -64,117 +68,5 @@ public class ReviewFormData {
         review.setGenres(genres);
         review.setBassModelId(bassModelId != null && !bassModelId.isBlank() ? bassModelId : null);
         return review;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
-    }
-
-    public Integer getOverallRating() {
-        return overallRating;
-    }
-
-    public void setOverallRating(Integer overallRating) {
-        this.overallRating = overallRating;
-    }
-
-    public Integer getToneRating() {
-        return toneRating;
-    }
-
-    public void setToneRating(Integer toneRating) {
-        this.toneRating = toneRating;
-    }
-
-    public Integer getTensionRating() {
-        return tensionRating;
-    }
-
-    public void setTensionRating(Integer tensionRating) {
-        this.tensionRating = tensionRating;
-    }
-
-    public Integer getLongevityRating() {
-        return longevityRating;
-    }
-
-    public void setLongevityRating(Integer longevityRating) {
-        this.longevityRating = longevityRating;
-    }
-
-    public Integer getFingerstyleRating() {
-        return fingerstyleRating;
-    }
-
-    public void setFingerstyleRating(Integer fingerstyleRating) {
-        this.fingerstyleRating = fingerstyleRating;
-    }
-
-    public Integer getSlapRating() {
-        return slapRating;
-    }
-
-    public void setSlapRating(Integer slapRating) {
-        this.slapRating = slapRating;
-    }
-
-    public Integer getPickRating() {
-        return pickRating;
-    }
-
-    public void setPickRating(Integer pickRating) {
-        this.pickRating = pickRating;
-    }
-
-    public Integer getTappingRating() {
-        return tappingRating;
-    }
-
-    public void setTappingRating(Integer tappingRating) {
-        this.tappingRating = tappingRating;
-    }
-
-    public Integer getFingerpickingRating() {
-        return fingerpickingRating;
-    }
-
-    public void setFingerpickingRating(Integer fingerpickingRating) {
-        this.fingerpickingRating = fingerpickingRating;
-    }
-
-    public Integer getThumpingRating() {
-        return thumpingRating;
-    }
-
-    public void setThumpingRating(Integer thumpingRating) {
-        this.thumpingRating = thumpingRating;
-    }
-
-    public Set<MusicGenre> getGenres() {
-        return genres;
-    }
-
-    public void setGenres(Set<MusicGenre> genres) {
-        this.genres = genres;
-    }
-
-    public String getBassModelId() {
-        return bassModelId;
-    }
-
-    public void setBassModelId(String bassModelId) {
-        this.bassModelId = bassModelId;
     }
 }

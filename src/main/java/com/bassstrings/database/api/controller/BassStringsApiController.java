@@ -14,6 +14,7 @@ import com.bassstrings.database.mapper.BassStringMapper;
 import com.bassstrings.database.service.BassStringSearchCriteria;
 import com.bassstrings.database.service.BassStringService;
 import com.bassstrings.database.service.ReviewService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -22,17 +23,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 /** Implements the {@link BassStringsApi} interface generated from openapi/bassstrings-api.yaml. */
 @RestController
+@RequiredArgsConstructor
 public class BassStringsApiController implements BassStringsApi {
 
     private final BassStringService bassStringService;
     private final ReviewService reviewService;
     private final BassStringMapper mapper;
-
-    public BassStringsApiController(BassStringService bassStringService, ReviewService reviewService, BassStringMapper mapper) {
-        this.bassStringService = bassStringService;
-        this.reviewService = reviewService;
-        this.mapper = mapper;
-    }
 
     @Override
     public ResponseEntity<BassStringPage> listBassStrings(Integer page, Integer size, String brand,

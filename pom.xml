@@ -23,6 +23,8 @@
     <openapi.spec>${project.basedir}/openapi/bassstrings-api.yaml</openapi.spec>
     <openapi-generator.version>7.25.0</openapi-generator.version>
     <swagger-annotations.version>2.2.27</swagger-annotations.version>
+    <!-- Overrides the Lombok version managed by spring-boot-starter-parent -->
+    <lombok.version>1.18.48</lombok.version>
   </properties>
 
   <dependencies>
@@ -90,12 +92,12 @@
       <artifactId>spring-security-test</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- Source: https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+    <!-- Compile-time only: generates getters/setters, constructors and loggers. Marked
+         optional so the Spring Boot plugin leaves it out of the runnable jar. -->
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>1.18.48</version>
-      <scope>compile</scope>
+      <optional>true</optional>
     </dependency>
     <!-- Source: https://mvnrepository.com/artifact/com.github.ekryd.sortpom/sortpom-maven-plugin -->
     <dependency>
@@ -109,6 +111,21 @@
   <build>
     <finalName>bass-strings-database</finalName>
     <plugins>
+      <!-- JDK 23+ no longer runs annotation processors found on the classpath, so
+           Lombok has to be registered explicitly. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+              <version>${lombok.version}</version>
+            </path>
+          </annotationProcessorPaths>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>

@@ -8,6 +8,7 @@ import com.bassstrings.database.domain.StringReview;
 import com.bassstrings.database.domain.UserAccount;
 import com.bassstrings.database.mapper.ReviewMapper;
 import com.bassstrings.database.service.ReviewService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -18,15 +19,11 @@ import static com.bassstrings.database.security.CurrentUserSupport.currentUser;
 
 /** Implements the {@link ReviewsApi} interface generated from openapi/bassstrings-api.yaml. */
 @RestController
+@RequiredArgsConstructor
 public class ReviewsApiController implements ReviewsApi {
 
     private final ReviewService service;
     private final ReviewMapper mapper;
-
-    public ReviewsApiController(ReviewService service, ReviewMapper mapper) {
-        this.service = service;
-        this.mapper = mapper;
-    }
 
     @Override
     public ResponseEntity<ReviewPage> listReviewsForBassString(String bassStringId, Integer page, Integer size) {

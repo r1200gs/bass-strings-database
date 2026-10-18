@@ -3,6 +3,7 @@ package com.bassstrings.database.service;
 import com.bassstrings.database.domain.BassGuitarModel;
 import com.bassstrings.database.exception.ResourceNotFoundException;
 import com.bassstrings.database.repository.BassGuitarModelRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -17,15 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class BassModelService {
 
     private final BassGuitarModelRepository repository;
     private final MongoTemplate mongoTemplate;
-
-    public BassModelService(BassGuitarModelRepository repository, MongoTemplate mongoTemplate) {
-        this.repository = repository;
-        this.mongoTemplate = mongoTemplate;
-    }
 
     public Page<BassGuitarModel> search(String brand, Integer numStrings, Pageable pageable) {
         List<Criteria> criteria = new ArrayList<>();

@@ -1,18 +1,16 @@
 package com.bassstrings.database.web;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
+@RequiredArgsConstructor
 public class LoginController {
 
     private final ClientRegistrationRepository clientRegistrationRepository;
-
-    public LoginController(ClientRegistrationRepository clientRegistrationRepository) {
-        this.clientRegistrationRepository = clientRegistrationRepository;
-    }
 
     @GetMapping("/login")
     public String login(Model model) {

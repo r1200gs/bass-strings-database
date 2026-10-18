@@ -1,6 +1,8 @@
 package com.bassstrings.database.security;
 
 import com.bassstrings.database.domain.UserAccount;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
@@ -16,24 +18,14 @@ import java.util.Map;
  * so Spring Security routes them through {@code oidcUserService(...)} rather than the
  * plain {@code userService(...)} hook used for Facebook. See {@link AppUserPrincipal}.
  */
+@RequiredArgsConstructor
 public class AppOidcUserPrincipal implements OidcUser, AppPrincipal {
 
+    @Getter
     private final UserAccount userAccount;
     private final OidcUser delegate;
+    @Getter
     private final Collection<? extends GrantedAuthority> authorities;
-
-    public AppOidcUserPrincipal(UserAccount userAccount,
-                                 OidcUser delegate,
-                                 Collection<? extends GrantedAuthority> authorities) {
-        this.userAccount = userAccount;
-        this.delegate = delegate;
-        this.authorities = authorities;
-    }
-
-    @Override
-    public UserAccount getUserAccount() {
-        return userAccount;
-    }
 
     @Override
     public Map<String, Object> getClaims() {
@@ -53,11 +45,6 @@ public class AppOidcUserPrincipal implements OidcUser, AppPrincipal {
     @Override
     public Map<String, Object> getAttributes() {
         return delegate.getAttributes();
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
     }
 
     @Override

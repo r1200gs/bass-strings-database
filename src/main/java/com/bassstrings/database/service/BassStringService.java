@@ -6,6 +6,7 @@ import com.bassstrings.database.domain.StringReview;
 import com.bassstrings.database.exception.ResourceNotFoundException;
 import com.bassstrings.database.repository.BassStringProductRepository;
 import com.bassstrings.database.repository.ReviewRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -22,19 +23,12 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 @Service
+@RequiredArgsConstructor
 public class BassStringService {
 
     private final BassStringProductRepository repository;
     private final ReviewRepository reviewRepository;
     private final MongoTemplate mongoTemplate;
-
-    public BassStringService(BassStringProductRepository repository,
-                              ReviewRepository reviewRepository,
-                              MongoTemplate mongoTemplate) {
-        this.repository = repository;
-        this.reviewRepository = reviewRepository;
-        this.mongoTemplate = mongoTemplate;
-    }
 
     public Page<BassStringProduct> search(BassStringSearchCriteria criteria, Pageable pageable) {
         List<Criteria> conditions = new ArrayList<>();

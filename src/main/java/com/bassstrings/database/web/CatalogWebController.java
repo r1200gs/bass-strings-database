@@ -14,6 +14,7 @@ import com.bassstrings.database.service.BassStringSearchCriteria;
 import com.bassstrings.database.service.BassStringService;
 import com.bassstrings.database.service.CommentService;
 import com.bassstrings.database.service.ReviewService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,20 +30,13 @@ import java.util.Map;
 
 /** Public, unauthenticated browsing: the catalog listing, filtering, and detail pages. */
 @Controller
+@RequiredArgsConstructor
 public class CatalogWebController {
 
     private final BassStringService bassStringService;
     private final BassModelService bassModelService;
     private final ReviewService reviewService;
     private final CommentService commentService;
-
-    public CatalogWebController(BassStringService bassStringService, BassModelService bassModelService,
-                                 ReviewService reviewService, CommentService commentService) {
-        this.bassStringService = bassStringService;
-        this.bassModelService = bassModelService;
-        this.reviewService = reviewService;
-        this.commentService = commentService;
-    }
 
     @GetMapping({"/", "/strings"})
     public String catalog(@RequestParam(required = false) String brand,

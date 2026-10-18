@@ -2,6 +2,7 @@ package com.bassstrings.database.security;
 
 import com.bassstrings.database.domain.UserAccount;
 import com.bassstrings.database.repository.UserAccountRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
@@ -17,13 +18,10 @@ import java.util.Optional;
  * subscriber.
  */
 @Component
+@RequiredArgsConstructor
 public class UserAccountProvisioner {
 
     private final UserAccountRepository repository;
-
-    public UserAccountProvisioner(UserAccountRepository repository) {
-        this.repository = repository;
-    }
 
     public UserAccount provision(String provider, String providerId, String email, String displayName, String avatarUrl) {
         Optional<UserAccount> byProvider = repository.findByProviderAndProviderId(provider, providerId);
