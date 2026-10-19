@@ -93,6 +93,37 @@ In production, use `https://your-domain/login/oauth2/code/{provider}` for all th
 put the secrets in your platform's secret manager rather than plain environment
 variables where avoidable.
 
+### Signing in locally with mock-oauth2-server
+
+For local runs and integration tests you don't need real provider credentials:
+`docker-compose.yml` starts [mock-oauth2-server](https://github.com/navikt/mock-oauth2-server)
+on `http://localhost:8090` and turns on a **Mock login (local only)** button on `/login`.
+
+```bash
+mvn clean package            # the Dockerfile copies target/*.jar
+docker compose up --build
+```
+
+Open `http://localhost:8080/login`, click **Continue with Mock login**, and type any
+username (it becomes your account's provider id, so a new name gives you a new user).
+The optional claims box takes JSON such as `{"email":"me@example.com","name":"Me"}`.
+
+To run the app from your IDE or `mvn spring-boot:run` instead, start only the
+dependencies and point the app at the mock server on localhost:
+
+```bash
+docker compose up -d mock-oauth2-server mongodb
+MOCK_OAUTH2_ENABLED=true \
+SPRING_MONGODB_URI='mongodb://rootuser:rootpass@localhost:27017/myapp?authSource=admin' \
+mvn spring-boot:run
+```
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `MOCK_OAUTH2_ENABLED` | `false` | Registers the mock provider. Never set this in production. |
+| `MOCK_OAUTH2_ISSUER_URI` | `http://localhost:8090/default` | Issuer the app calls for token, userinfo and JWKS. |
+| `MOCK_OAUTH2_AUTHORIZATION_URI` | `<issuer>/authorize` | Where the browser is sent to sign in. Only needed when the app and your browser reach the mock server by different host names, as in docker-compose. |
+
 ### Seeding data
 
 There's no admin UI yet (see "What's not built" below) - the fastest way to get a bass

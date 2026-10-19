@@ -20,9 +20,14 @@ server:
 # manager loads, or your platform's secret store.
 app:
   oauth2:
+    # Local stand-in provider (mock-oauth2-server, see docker-compose.yml). Off by default;
+    # docker-compose turns it on. The mock server accepts any client id/secret.
     mock:
-      client-id: mock
-      client-secret: mock
+      enabled: ${MOCK_OAUTH2_ENABLED:false}
+      client-id: ${MOCK_OAUTH2_CLIENT_ID:bass-strings-database}
+      client-secret: ${MOCK_OAUTH2_CLIENT_SECRET:mock-secret}
+      issuer-uri: ${MOCK_OAUTH2_ISSUER_URI:http://localhost:8090/default}
+      authorization-uri: ${MOCK_OAUTH2_AUTHORIZATION_URI:}
     google:
       client-id: ${GOOGLE_CLIENT_ID:}
       client-secret: ${GOOGLE_CLIENT_SECRET:}
